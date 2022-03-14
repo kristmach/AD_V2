@@ -1,0 +1,281 @@
+openapi: '3.0.0'
+info:
+  title: Places App API
+  version: 1.0.0
+  description: Places App API Documentation
+servers:
+  - url: http://localhost:3001 
+
+tags:
+  - name: Places
+    description: The places endpoint
+  - name: Users
+    description: The users endpoint
+  - name: Login
+    description: The login endpoint
+
+paths:
+  /api/places:
+    get:
+      summary: Returns a list of all Places
+      tags: [Places]
+      responses:
+        '200':
+          description: Successfully returned a list of places
+          content:
+            application/json:
+              schema:
+                description: List of a places
+                type: array
+                items:
+                  $ref: '#/components/schemas/Place'
+            text/csv:
+              schema:
+                description: List of a places in CSV format
+                type: array
+                items:
+                  $ref: '#/components/schemas/Place'
+    post:
+      summary: Create a new Place
+      tags: [Places]
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceToBeAdded'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The place was created
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'
+        '400':
+          description: Invalid request body
+        '401':
+          description: Authentication error (token is missing)
+        '403':
+          description: User not found or wrong token
+        '404':
+          description: Server Error
+  /api/places/{id}:
+    get:
+      summary: Returns a Place by ID
+      tags: [Places]
+      parameters:
+      - name: id
+        in: path
+        description: ID of place to return
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successfully returned a place
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'
+        '400':
+          description: Invalid Place ID
+        '404':
+          description: Place ID not found
+    delete:
+      summary: Delete a Place by ID
+      tags: [Places]
+      parameters:
+      - name: id
+        in: path
+        description: ID of place to delete
+        required: true
+        schema:
+          type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Place successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'
+        '400':
+          description: Invalid Place ID
+        '401':
+          description: Authentication error (token is missing)
+        '403':
+          description: User cannot delete another's place or wrong token
+        '404':
+          description: Place ID not found
+  /api/users:
+    get:
+      summary: Returns a list of all Users
+      tags: [Users]
+      responses:
+        '200':
+          description: Successfully returned a list of users
+          content:
+            application/json:
+              schema:
+                description: List of a users
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Create a new User
+      tags: [Users]
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPwd'
+      responses:
+        '200':
+          description: New user was created
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request body
+        '404':
+          description: Server Error
+        '405':
+          description: Duplicate. User already found
+  /api/users/{id}:
+    get:
+      summary: Returns a User by ID
+      tags: [Users]
+      parameters:
+      - name: id
+        in: path
+        description: ID of user to return
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successfully returned a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid User ID
+        '404':
+          description: User not found
+  /api/login:
+    post:
+      summary: Authenticates a User
+      tags: [Login]
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPwd'
+      responses:
+        '200':
+          description: successful login
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request body
+        '401':
+          description: Invalid username or password
+        '404':
+          description: Server Error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT  # JSON Web Token
+
+  schemas:
+    PlaceToBeAdded:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: The name of the Place
+        UserId:
+          type: integer
+          description: The Id of the user who created Place
+        Latitude: 
+          type: number
+          description: The latitude of the place
+        Longitude:
+          type: number
+          description: The longitude of the place
+      example:
+        Name: API course
+        UserId: 41
+        Latitude: 10.1234
+        Longitude: 20.2345
+
+    Place:
+      type: object
+      properties:
+        ID:
+          type: integer
+          description: The ID of the Place
+        Name:
+          type: string
+          description: The name of the Place
+        UserID:
+          type: integer
+          description: The ID of the user who created the place
+        UserName:
+          type: string
+          description: The name of the user who created the place
+        Latitude: 
+          type: number
+          description: The latitude of the place
+        Longitude:
+          type: number
+          description: The longitud of the place
+      example:
+        ID: 1
+        Name: Some place
+        UserId: 1
+        UserName: Radu
+        Latitude: 62.6120
+        Longitude: 29.6910
+    User:
+      type: object
+      properties:
+        ID:
+          type: integer
+          description: User ID
+        Name:
+          type: string
+          description: User name
+        Password:
+          type: string
+          description: User password
+      example:
+        ID: 105
+        Name: Pia
+        Password: passw0rd
+    UserPwd:
+      type: object
+      properties:
+        name:
+          type: string
+          description: User name
+        password:
+          type: string
+          description: User password
+      example:
+        name: Pia
+        password: passw0rd
+
+

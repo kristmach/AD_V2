@@ -1,0 +1,65 @@
+tags:
+  - name: Places
+    description: The places endpoint
+  - name: Users
+    description: The users endpoint
+  - name: Login
+    description: The login endpoint
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # JSON Web Token
+
+  schemas:
+    PlaceToBeAdded:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the Place
+        userId:
+          type: integer
+          description: The ID of the user who created the Place
+        lat:
+          type: number
+          description: The Latitude of the Place
+        lon:
+          type: number
+          description: The Longitude of the Place
+      example:
+          name: API Course
+          userId: 41
+          lat: 10.1234
+          lon: 20.2345
+
+    Place:
+      type: object
+      properties:
+        ID:
+          type: integer
+          description: The ID of the Place
+        Name:
+          type: string
+          description: The name of the Place
+        UserID:
+          type: integer
+          description: The ID of the user who created the place
+        UserName:
+          type: string
+          description: The name of the user who created the place
+        Latitude:
+          type: number
+          description: The latitude of the place
+        Longitude:
+          type: number
+          description: The longitude of the place
+      example:
+        ID: 1
+        Name: favorite beach
+        UserID: 1
+        UserName: Radu
+        Latitude: 62.6120
+        Longitude: 29.6910

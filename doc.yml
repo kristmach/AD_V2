@@ -1,0 +1,112 @@
+openapi: '3.0.0'
+info:
+  title: Places App API
+  version: 1.0.0
+  description: Places App API Documentation
+servers:
+  - url: http://localhost:3001
+
+tags:
+  - name: Places
+    description: The places endpoint
+  - name: Users
+    description: The users endpoint
+  - name: Login
+    description: The login endpoint
+
+paths:
+  /api/places:
+    get:
+      summary: Returns a list of all Places
+      tags: [Places]
+      operationId: getPlaces
+      responses:
+        '200':
+          description: Successfully returned a list of places
+          content:
+            application/json:
+              schema:
+                description: List of places
+                type: array
+                items:
+                  $ref: '#/components/schemas/Place'
+    post:
+      summary: Create a new Place
+      tags: [Places]
+      operationId: addPlace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceToBeAdded'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The place was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'
+        '404':
+          description: Server Error
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # JSON Web Token
+
+  schemas:
+    PlaceToBeAdded:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the Place
+        userId:
+          type: integer
+          description: The ID of the user who created the Place
+        lat:
+          type: number
+          description: The Latitude of the Place
+        lon:
+          type: number
+          description: The Longitude of the Place
+      example:
+          name: API Course
+          userId: 41
+          lat: 10.1234
+          lon: 20.2345
+
+    Place:
+      type: object
+      properties:
+        ID:
+          type: integer
+          description: The ID of the Place
+        Name:
+          type: string
+          description: The name of the Place
+        UserID:
+          type: integer
+          description: The ID of the user who created the place
+        UserName:
+          type: string
+          description: The name of the user who created the place
+        Latitude:
+          type: number
+          description: The latitude of the place
+        Longitude:
+          type: number
+          description: The longitude of the place
+      example:
+        ID: 1
+        Name: favorite beach
+        UserID: 1
+        UserName: Radu
+        Latitude: 62.6120
+        Longitude: 29.6910

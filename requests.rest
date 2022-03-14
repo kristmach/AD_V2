@@ -1,0 +1,38 @@
+GET http://localhost:3001/api/places
+###
+GET http://localhost:3001/api/places/3
+###
+GET http://localhost:3001/api/users
+###
+GET http://localhost:3001/api/users/radu
+###
+POST http://localhost:3001/api/users
+content-type:application/json
+
+{
+    "name":"<give a user name to create a new user>",
+    "password":"<give a password>"
+}
+###
+POST http://localhost:3001/api/login
+content-type:application/json
+
+{
+    "name":"Azure",
+    "password":"1234"
+}
+###
+POST http://localhost:3001/api/places
+content-type:application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkF6dXJlIiwiaWQiOjQxLCJpYXQiOjE2NDM2MTc4Mjh9.J0p71ZIelklIV9UyVCl-q03USw1ZCUUt0-tR6s9Terg
+
+{
+    "name":"API Course",
+    "userId":41,
+    "lat":10.1234,
+    "lon":20.2345
+}
+###
+DELETE http://localhost:3001/api/places/3
+content-type:application/json
+Authorization: bearer <enter the token from the login request response>
